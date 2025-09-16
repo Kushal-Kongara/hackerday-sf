@@ -1,0 +1,86 @@
+.landing-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  color: white;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 20px 0;
+}
+
+.header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  background: linear-gradient(45deg, #fff, #e0e7ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.chart-section {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+.revenue-section {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+.agent-section {
+  grid-column: 1 / -1;
+  grid-row: 2 / 3;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+  
+  .chart-section {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  
+  .revenue-section {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  
+  .agent-section {
+    grid-column: 1;
+    grid-row: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  .header p {
+    font-size: 1rem;
+  }
+  
+  .dashboard-grid {
+    gap: 20px;
+  }
+}
