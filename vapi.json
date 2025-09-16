@@ -1,0 +1,72 @@
+{
+    "id": "aa926c06-a58c-4024-a48a-d4bea581c23a",
+    "orgId": "86ef6961-3957-466a-b005-d327302b2b18",
+    "name": "SF Marketer",
+    "voice": {
+      "model": "tts-1-hd",
+      "voiceId": "ash",
+      "provider": "openai"
+    },
+    "createdAt": "2025-09-16T21: 05: 02.636Z",
+    "updatedAt": "2025-09-16T22: 38: 38.670Z",
+    "model": {
+      "model": "gpt-4o-mini-realtime-preview-2024-12-17",
+      "messages": [
+        {
+          "role": "system",
+          "content": "\"You are a professional sports ticket sales representative making outbound calls to fans who already have some history with the team. Always simulate the flow of a live phone conversation.\n\n\nUse MCP-provided data (fan name, last game attended, favorite player, etc.) naturally.\n\nFocus on selling single-game tickets in a friendly but convincing tone — persuasive, never begging.\n\nKeep responses short and conversational, like real phone dialogue.\n\nHandle objections with simple reassurance and options.\n\nAlways move toward the close and provide a purchase link (placeholder: [Purchase Link]) at the end.\n\nStay fully in character as a phone sales rep.\"*"
+        }
+      ],
+      "provider": "openai",
+      "maxTokens": 50,
+      "temperature": 0.6
+    },
+    "firstMessage": "Hi! this is Fangio from the SF Giants ticket office. I saw you’ve been out to a game with us before, and I just wanted to let you know we’ve got some great single-game ticket options coming up. Do you have a minute to hear what’s available?",
+    "voicemailMessage": "Please call back when you're available.",
+    "endCallFunctionEnabled": true,
+    "endCallMessage": "Goodbye.",
+    "transcriber": {
+      "model": "nova-2",
+      "language": "en",
+      "provider": "deepgram"
+    },
+    "analysisPlan": {
+      "summaryPlan": {
+        "messages": [
+          {
+            "content": "Summarize the sales call in 1-2 sentences. Include: (1) how the rep greeted and engaged the customer, (2) whether the single-game ticket pitch was made, (3) key customer reactions or objections, and (4) whether a ticket purchase link was successfully provided at the end. Keep the tone professional and concise, suitable for internal call logs.”",
+            "role": "system"
+          },
+          {
+            "content": "Here is the transcript:\n\n{{transcript}}\n\n. Here is the ended reason of the call:\n\n{{endedReason}}\n\n",
+            "role": "user"
+          }
+        ]
+      },
+      "successEvaluationPlan": {
+        "rubric": "Checklist",
+        "messages": [
+          {
+            "content": "“Evaluate if the sales call was successful. A call is successful only if the representative greets the customer professionally, pitches single-game tickets, and provides a clear purchase link by the end of the call. If the rep fails to provide the link, fails to make the pitch, or ends the call without a clear next step, mark it as unsuccessful.”\n\nRubric:\n\n{{rubric}}\n\nOnly respond with the evaluation result.",
+            "role": "system"
+          },
+          {
+            "content": "Here is the transcript of the call:\n\n{{transcript}}\n\n. Here is the ended reason of the call:\n\n{{endedReason}}\n\n",
+            "role": "user"
+          },
+          {
+            "content": "Here was the system prompt of the call:\n\n{{systemPrompt}}\n\n",
+            "role": "user"
+          }
+        ],
+        "timeoutSeconds": 16
+      }
+    },
+    "stopSpeakingPlan": {
+      "numWords": 4,
+      "voiceSeconds": 0.3,
+      "backoffSeconds": 3
+    },
+    "isServerUrlSecretSet": false
+  }
+  
