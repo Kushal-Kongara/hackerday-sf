@@ -1,0 +1,54 @@
+version: 1
+disable_existing_loggers: False
+
+formatters:
+  standard:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  detailed:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(module)s - %(funcName)s - %(message)s'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: standard
+    stream: ext://sys.stdout
+  
+  file:
+    class: logging.FileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: logs/ticket_sales_agent.log
+    mode: a
+  
+  error_file:
+    class: logging.FileHandler
+    level: ERROR
+    formatter: detailed
+    filename: logs/errors.log
+    mode: a
+
+loggers:
+  src.agents:
+    level: DEBUG
+    handlers: [console, file]
+    propagate: False
+  
+  src.databases:
+    level: DEBUG
+    handlers: [console, file]
+    propagate: False
+  
+  src.vapi:
+    level: INFO
+    handlers: [console, file]
+    propagate: False
+  
+  src.mcp:
+    level: INFO
+    handlers: [console, file]
+    propagate: False
+
+root:
+  level: INFO
+  handlers: [console, file, error_file]
