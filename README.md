@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Ticket Sales Agent
 
 An AI-powered ticket sales agent that uses multi-agent architecture to make personalized sales calls to customers.
@@ -33,22 +32,37 @@ The system consists of several integrated components:
 
 ### 1. Environment Setup
 
-Copy the environment template:
+Create a `.env` file in the frontend directory:
 ```bash
-cp .env.template .env
+# Vapi Configuration
+REACT_APP_VAPI_API_KEY=your_vapi_api_key_here
+
+# Backend API Configuration
+REACT_APP_API_URL=http://localhost:8000
 ```
 
-Configure your environment variables:
-```bash
-# Required API Keys
-VAPI_API_KEY=your_vapi_api_key
-OPENAI_API_KEY=your_openai_api_key
+### 2. Vapi Integration Setup
 
-# Database Connections  
-WEAVIATE_URL=http://localhost:8080
-NEO4J_URI=bolt://localhost:7687
-NEO4J_PASSWORD=your_neo4j_password
-```
+This dashboard integrates with Vapi for AI voice calls. To set up Vapi:
+
+1. **Get your Vapi API Key:**
+   - Sign up at [vapi.ai](https://vapi.ai)
+   - Get your API key from the dashboard
+
+2. **Create an Assistant:**
+   - Use the Vapi CLI: `vapi assistant create`
+   - Or create one in the Vapi dashboard
+   - Copy the Assistant ID
+
+3. **Configure the Dashboard:**
+   - Add your Vapi API key to `.env`
+   - Enter your Assistant ID in the settings panel
+   - Enter the target phone number
+
+4. **Start Making Calls:**
+   - Click "Start Agent" to initiate a call
+   - The dashboard will show real-time call status
+   - Use "Stop" to end the call
 
 ### 2. Install Dependencies
 
@@ -73,107 +87,11 @@ docker run -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/your_password neo4j:lat
 ```bash
 python main.py
 ```
-=======
-# AI Agent Dashboard - Frontend
-
-A modern React TypeScript dashboard for monitoring AI agent performance in sports ticket sales.
-
-## Features
-
-- **Real-time Performance Monitoring**: Live pie chart showing call statistics (success, rejected, voicemail, forwarded)
-- **Revenue Analytics**: Daily revenue tracking with success rate and monthly projections
-- **Agent Control Center**: Start/stop/pause agent functionality with configuration options
-- **Responsive Design**: Modern UI with glassmorphism effects and mobile-friendly layout
-- **Real-time Updates**: Live data updates every 5 seconds when agent is running
-
-## Components
-
-### PerformanceChart
-- Interactive pie chart using Recharts
-- Real-time call statistics visualization
-- Success and rejection rate calculations
-- Custom tooltips and legends
-
-### RevenueTracker
-- Daily revenue display with currency formatting
-- Success rate and revenue per call metrics
-- Monthly revenue projections
-- Performance indicators
-
-### AgentControls
-- Agent start/stop/pause controls
-- Real-time agent status monitoring
-- Configuration panel for agent settings
-- Agent statistics display
-
-## Tech Stack
-
-- **React 18** with TypeScript
-- **Recharts** for data visualization
-- **Lucide React** for icons
-- **Axios** for API communication
-- **CSS3** with modern features (backdrop-filter, gradients)
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 16+ 
-- npm or yarn
-
-### Installation
-
-1. Navigate to the frontend directory:
-```bash
-cd frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start the development server:
-```bash
-npm start
-```
-
-4. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-### Environment Variables
-
-Create a `.env` file in the frontend directory:
-
-```env
-REACT_APP_API_URL=http://localhost:8000
-```
-
-## API Integration
-
-The frontend is designed to work with a backend API. The API service (`src/services/api.ts`) includes:
-
-- Call statistics endpoints
-- Revenue data endpoints
-- Agent control endpoints
-- Configuration management
-- Real-time updates via polling
-
-### Expected Backend Endpoints
-
-- `GET /api/stats/calls` - Get call statistics
-- `GET /api/stats/revenue` - Get revenue data
-- `GET /api/agent/status` - Get agent status
-- `POST /api/agent/start` - Start agent
-- `POST /api/agent/stop` - Stop agent
-- `PUT /api/agent/config` - Update agent configuration
-- `GET /api/agent/config` - Get agent configuration
->>>>>>> 87e165d (Added frontend)
 
 ## Project Structure
 
 ```
 src/
-<<<<<<< HEAD
 ├── agents/                 # Multi-agent system
 │   ├── base_agent.py      # Base agent class
 │   ├── data_analyst_agent.py  # User/game analysis
@@ -302,62 +220,3 @@ All configuration is managed through environment variables and the `ConfigManage
 ## License
 
 [Add your license here]
-=======
-├── components/
-│   ├── LandingPage.tsx          # Main dashboard page
-│   ├── PerformanceChart.tsx     # Pie chart component
-│   ├── RevenueTracker.tsx       # Revenue analytics
-│   ├── AgentControls.tsx        # Agent control panel
-│   └── *.css                    # Component styles
-├── services/
-│   └── api.ts                   # API service layer
-├── App.tsx                      # Main app component
-├── index.tsx                    # Entry point
-└── *.css                        # Global styles
-```
-
-## Customization
-
-### Styling
-- Modify CSS files in the `src/components/` directory
-- Global styles are in `src/index.css` and `src/App.css`
-- Uses CSS custom properties for easy theming
-
-### Data Sources
-- Update `src/services/api.ts` to connect to your backend
-- Modify data structures in component interfaces as needed
-- Add new API endpoints as required
-
-### Agent Configuration
-- Add new configuration options in `AgentControls.tsx`
-- Update the `AgentConfig` interface in `api.ts`
-- Modify the settings panel UI as needed
-
-## Development
-
-### Available Scripts
-
-- `npm start` - Runs the app in development mode
-- `npm build` - Builds the app for production
-- `npm test` - Launches the test runner
-- `npm eject` - Ejects from Create React App
-
-### Building for Production
-
-```bash
-npm run build
-```
-
-This builds the app for production to the `build` folder.
-
-## Browser Support
-
-- Chrome 80+
-- Firefox 75+
-- Safari 13+
-- Edge 80+
-
-## License
-
-This project is part of the HackerDay AI Agent system.
->>>>>>> 87e165d (Added frontend)

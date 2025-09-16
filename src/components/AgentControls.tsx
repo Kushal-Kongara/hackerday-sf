@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Play, 
   Pause, 
@@ -9,8 +9,11 @@ import {
   Clock,
   Target,
   Zap,
-  Brain
+  Brain,
+  Phone
 } from 'lucide-react';
+import { vapiService, formatPhoneNumber, validatePhoneNumber } from '../services/vapi';
+import VapiWidget from './VapiWidget';
 import './AgentControls.css';
 
 interface AgentControlsProps {
@@ -20,26 +23,94 @@ interface AgentControlsProps {
 
 const AgentControls: React.FC<AgentControlsProps> = ({ isRunning, onToggle }) => {
   const [showSettings, setShowSettings] = useState(false);
+  const [isCallActive, setIsCallActive] = useState(false);
+  const [callStatus, setCallStatus] = useState<string>('Ready');
+  const [showVapiWidget, setShowVapiWidget] = useState(false);
   const [agentConfig, setAgentConfig] = useState({
     maxCallsPerHour: 20,
     callDuration: 300, // 5 minutes in seconds
     retryAttempts: 2,
     voiceModel: 'premium',
-    targetAudience: 'sports-fans'
+    targetAudience: 'sports-fans',
+    phoneNumber: '+1234567890', // Default phone number
+    assistantId: 'aa926c06-a58c-4024-a48a-d4bea581c23a' // Vapi assistant ID
   });
 
+  // Initialize Vapi service
+  useEffect(() => {
+    // Initialize Vapi service with configuration
+    if (agentConfig.assistantId && agentConfig.phoneNumber) {
+      vapiService.initialize({
+        assistantId: agentConfig.assistantId,
+        phoneNumber: agentConfig.phoneNumber,
+        apiKey: process.env.REACT_APP_VAPI_API_KEY || ''
+      });
+    }
+  }, [agentConfig.assistantId, agentConfig.phoneNumber]);
+
   const handleStart = () => {
+    // Open the Vapi widget for conversation
+    setShowVapiWidget(true);
+    setCallStatus('Starting conversation...');
+    setIsCallActive(true);
     onToggle(true);
   };
 
-  const handleStop = () => {
+  const handleCloseWidget = () => {
+    setShowVapiWidget(false);
+    setCallStatus('Conversation ended');
+    setIsCallActive(false);
     onToggle(false);
+  };
+
+  const handleStop = () => {
+    setCallStatus('Ending conversation...');
+    setShowVapiWidget(false);
+    setIsCallActive(false);
+    onToggle(false);
+    setCallStatus('Ready');
   };
 
   const handlePause = () => {
+    setCallStatus('Conversation paused');
+    setShowVapiWidget(false);
+    setIsCallActive(false);
     onToggle(false);
   };
 
+  // Monitor call status
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentCall = vapiService.getCurrentCall();
+      if (currentCall) {
+        switch (currentCall.status) {
+          case 'initiated':
+            setCallStatus('Call initiated');
+            break;
+          case 'ringing':
+            setCallStatus('Ringing...');
+            break;
+          case 'answered':
+            setCallStatus('Call answered');
+            break;
+          case 'ended':
+            setCallStatus('Call ended');
+            setIsCallActive(false);
+            onToggle(false);
+            break;
+          case 'failed':
+            setCallStatus('Call failed');
+            setIsCallActive(false);
+            onToggle(false);
+            break;
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isCallActive, onToggle]);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -51,7 +122,9 @@ const AgentControls: React.FC<AgentControlsProps> = ({ isRunning, onToggle }) =>
     totalAgents: 1,
     avgCallDuration: '4:32',
     callsInQueue: isRunning ? 15 : 0,
-    nextCallIn: isRunning ? '00:45' : '--:--'
+    nextCallIn: isRunning ? '00:45' : '--:--',
+    callStatus: callStatus,
+    isCallActive: isCallActive
   };
 
   return (
@@ -64,6 +137,12 @@ const AgentControls: React.FC<AgentControlsProps> = ({ isRunning, onToggle }) =>
               <Activity size={16} />
               <span>{isRunning ? 'Active' : 'Stopped'}</span>
             </div>
+            {isCallActive && (
+              <div className="call-status">
+                <Phone size={16} />
+                <span>{callStatus}</span>
+              </div>
+            )}
           </div>
         </div>
         <button 
@@ -82,7 +161,7 @@ const AgentControls: React.FC<AgentControlsProps> = ({ isRunning, onToggle }) =>
             disabled={isRunning}
           >
             <Play size={20} />
-            <span>Start Agent</span>
+            <span>Start Conversation</span>
           </button>
           
           <button 
@@ -235,6 +314,32 @@ const AgentControls: React.FC<AgentControlsProps> = ({ isRunning, onToggle }) =>
                 <option value="premium">Premium Customers</option>
               </select>
             </div>
+
+            <div className="setting-group">
+              <label>Phone Number</label>
+              <input 
+                type="tel" 
+                value={agentConfig.phoneNumber}
+                onChange={(e) => setAgentConfig({
+                  ...agentConfig,
+                  phoneNumber: e.target.value
+                })}
+                placeholder="+1234567890"
+              />
+            </div>
+
+            <div className="setting-group">
+              <label>Vapi Assistant ID</label>
+              <input 
+                type="text" 
+                value={agentConfig.assistantId}
+                onChange={(e) => setAgentConfig({
+                  ...agentConfig,
+                  assistantId: e.target.value
+                })}
+                placeholder="Enter your Vapi Assistant ID"
+              />
+            </div>
           </div>
 
           <div className="settings-actions">
@@ -258,6 +363,12 @@ const AgentControls: React.FC<AgentControlsProps> = ({ isRunning, onToggle }) =>
           <span>Real-time Performance Tracking</span>
         </div>
       </div>
+
+      {/* Vapi Widget */}
+      <VapiWidget 
+        isVisible={showVapiWidget} 
+        onClose={handleCloseWidget} 
+      />
     </div>
   );
 };
